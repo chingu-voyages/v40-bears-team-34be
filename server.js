@@ -4,6 +4,7 @@ import express from 'express';
 import cors from 'cors';
 import { connectMongoAtlas } from './config/db.js';
 import morgan from 'morgan';
+import { errorHandler } from './middlewares/error.js';
 
 connectMongoAtlas();
 
@@ -18,6 +19,10 @@ if (process.env.NODE_ENV === 'development') {
 app.get('/', (req, res) => {
   res.json({ message: 'Hello from the root route' });
 });
+
+
+// Error Handler Middlware
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5500;
 const server = app.listen(PORT, () => {
