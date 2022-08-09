@@ -1,0 +1,12 @@
+{
+	"recommendations": [
+		"formulahendry.auto-close-tag",
+    "esbenp.prettier-vscode",
+    "rvest.vs-code-prettier-eslint",
+    "formulahendry.auto-rename-tag",
+    "coenraads.bracket-pair-colorizer-2",
+    "2gua.rainbow-brackets",
+    "mikestead.dotenv",
+    "dsznajder.es7-react-js-snippets",
+	]
+}
