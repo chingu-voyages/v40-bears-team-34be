@@ -5,6 +5,7 @@ import cors from 'cors';
 import { connectMongoAtlas } from './config/db.js';
 import morgan from 'morgan';
 import { errorHandler } from './middlewares/error.js';
+import apartmentRoutes from './routes/apartment.js'
 
 connectMongoAtlas();
 
@@ -19,6 +20,8 @@ if (process.env.NODE_ENV === 'development') {
 app.get('/', (req, res) => {
   res.json({ message: 'Hello from the root route' });
 });
+
+app.use('/api/v1/apartments',apartmentRoutes)
 
 
 // Error Handler Middlware
