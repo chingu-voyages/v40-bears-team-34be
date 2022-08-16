@@ -53,13 +53,27 @@ export const ReviewSchema = new mongoose.Schema({
         max: 10,
         required: [true, 'Please add a rating between 1 and 10'],
     },
-    amenitiesRating: {
-        type: Number,
-        min: 1,
-        max: 10,
-        required: [true, 'Please add a rating between 1 and 10'],
+    sentiment: {
+        positive: {
+            type: Number,
+        },
+        negative: {
+            type: Number,
+        },
+        neutral: {
+            type: Number,
+        },
+        compound: {
+            type: Number,
+        },
+        result: {
+            type:String
+        }
     },
-    overallScore: {
+    amenitiesScore: {
+        type: Number,
+    },
+    reviewsScore: {
         type: Number,
     },
     apartment: {
@@ -71,7 +85,7 @@ export const ReviewSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: 'User',
         required: true,
-        default:`62f4e5b99fbafe1ce87ead33`
+        default: `62f4e5b99fbafe1ce87ead33`,
     },
     createdAt: {
         type: Date,
