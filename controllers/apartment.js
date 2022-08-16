@@ -12,8 +12,8 @@ export const getAllApartments = asyncHandler(async (req, res, next) => {
           field: 'asc',
           createdAt: -1,
       })
-    .populate({ path: 'user', select: 'name' });
-      ;
+    .populate({ path: 'user', select: 'name' })
+    .populate('reviews');
   res.status(200).json({ message: 'success',count:apartments.length, data: apartments });
 });
 
