@@ -15,12 +15,15 @@ export const addReview = asyncHandler(async (req, res, next) => {
   if (!apartment) {
     return next(new ErrorResponse(`No Apartment found with that Id`,404))
   }
-  const review = await Review.create(req.body);
+    const review = await Review.create(req.body);
+    apartment.reviews.push(review)
+    await apartment.save();
+
 
   res.status(201).json({success:true,data:review})
 })
 
-// @desc      Get al reviews
+// @desc      Get all reviews
 // @route     GET /api/v1/apartments/:apartmentId/reviews
 // @access    Public
 

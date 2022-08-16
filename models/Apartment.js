@@ -1,12 +1,13 @@
 import mongoose from 'mongoose';
 import slugify from 'slugify';
 import {AmenitySchema} from './Amenity.js'
+import { ScoresSchema } from './Scores.js';
 
 const ApartmentSchema = new mongoose.Schema(
     {
         name: {
             type: String,
-            required: [true, 'Apartment name is required'],
+            required: [true, 'Apartment complex name is required'],
         },
         city: {
             type: String,
@@ -23,37 +24,92 @@ const ApartmentSchema = new mongoose.Schema(
             type: String,
             required: [true, 'Image URL is required'],
         },
-        monthlyRent: {
-            type: Number,
-            default: 3000,
-        },
+        // bedroom: {
+        //     rooms: {
+        //         type: Number,
+        //         enum: [1, 2, 3, 4, 5],
+        //         required: [true, 'Add the bedroom count for this apartment'],
+        //     },
+        //     monthlyRent: {
+        //         type: Number,
+        //         required: [true, 'Please enter the amount in dollars'],
+        //     },
+        // },
         bedrooms: {
-            type: Number,
-            min: [1, 'Minimum number of bedrooms is 1'],
-            max: [3, 'maximum number or bedrooms is 3'],
-            default: 1,
+            '1Bedroom': {
+                exist: {
+                    type: Boolean,
+                    default: true,
+                },
+                monthlyRent: {
+                    type: Number,
+                    default: 1500,
+                },
+            },
+            '2Bedroom': {
+                exist: {
+                    type: Boolean,
+                    default: true,
+                },
+                monthlyRent: {
+                    type: Number,
+                    default: 2000,
+                },
+            },
+            '3Bedroom': {
+                exist: {
+                    type: Boolean,
+                    default: true,
+                },
+                monthlyRent: {
+                    type: Number,
+                    default: 3000,
+                },
+            },
+            '4Bedroom': {
+                exist: {
+                    type: Boolean,
+                },
+                monthlyRent: {
+                    type: Number,
+                },
+            },
+            '5Bedroom': {
+                exist: {
+                    type: Boolean,
+                },
+                monthlyRent: {
+                    type: Number,
+                },
+            },
         },
+
         isAvailable: {
             type: Boolean,
             default: true,
         },
-        contactPerson: {
-            type: String,
-            default: 'admin',
+        contact: {
+            name: {
+                type: String,
+                default: 'admin',
+            },
+            email: {
+                type: String,
+                match: [
+                    /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+                    'Please add a valid email address',
+                ],
+                default: 'admin@apch.com',
+            },
         },
-        contactEmail: {
-            type: String,
-            match: [
-                /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-                'Please add a valid email address',
-            ],
-            default: 'admin@apch.com',
-        },
-        livabilityScore: {
-            type: Number,
-            min: [0, 'Minimum score is 0 and decimals are allowed'],
-            max: [10, 'maximum score is 10'],
-            default: 0,
+
+        scores: {
+            type: ScoresSchema,
+            default: {
+                amenitiesScore: 10,
+                rentalScore: 30,
+                reviewsScore: 30,
+            },
         },
         address: {
             type: String,
@@ -61,11 +117,13 @@ const ApartmentSchema = new mongoose.Schema(
         slug: {
             type: String,
         },
-        reviews: [{
-            type: mongoose.Schema.ObjectId,
-            ref: 'Review',
-            required: true,
-        }],
+        reviews: [
+            {
+                type: mongoose.Schema.ObjectId,
+                ref: 'Review',
+                required: true,
+            },
+        ],
         amenities: {
             type: AmenitySchema,
             default: {},
@@ -73,7 +131,7 @@ const ApartmentSchema = new mongoose.Schema(
         user: {
             type: mongoose.Schema.ObjectId,
             ref: 'User',
-            required: true
+            required: true,
         },
     },
     { timestamps: true }
