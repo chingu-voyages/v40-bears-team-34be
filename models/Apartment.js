@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import slugify from 'slugify';
-import {AmenitySchema} from './Amenity.js'
+import { AmenitySchema } from './Amenity.js';
 import { ScoresSchema } from './Scores.js';
 
 const ApartmentSchema = new mongoose.Schema(
