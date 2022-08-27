@@ -29,6 +29,8 @@
         "slugify": "^1.6.5"
     },
     "engines": {
-        "node": "16.14.0"
-    }
+        "node": "16.14.0",
+        "yarn": "3.2.2"
+    },
+    "packageManager": "yarn@3.2.2"
 }
