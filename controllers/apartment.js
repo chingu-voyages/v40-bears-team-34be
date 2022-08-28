@@ -7,21 +7,19 @@ import { Apartment } from '../models/Apartment.js';
 // @access    Public
 
 export const getAllApartments = asyncHandler(async (req, res, next) => {
-    const query = req.query;
-    console.log(query);
-
-    const apartments = await Apartment.find(query)
-        .sort({
-            field: 'asc',
-            createdAt: -1,
-        })
-        .populate({ path: 'user', select: 'name' })
-        .populate('reviews');
-    res.status(200).json({
-        message: 'success',
-        count: apartments.length,
-        data: apartments,
-    });
+    // const apartments = await Apartment.find(query)
+    //     .sort({
+    //         field: 'asc',
+    //         createdAt: -1,
+    //     })
+    //     .populate({ path: 'user', select: 'name' })
+    //     .populate('reviews');
+    // res.status(200).json({
+    //     message: 'success',
+    //     count: apartments.length,
+    //     data: apartments,
+    // });
+    res.status(200).json(res.searchResults);
 });
 
 // @desc      Get a single Apartment
@@ -62,6 +60,6 @@ export const deleteApartment = asyncHandler(async (req, res, next) => {
     if (!apartment) {
         return next(new ErrorResponse(`No Apartment found with that Id`, 404));
     }
-    await Apartment.findByIdAndDelete(req.params.id);
+    apartment.remove();
     res.status(200).json({ message: 'success', data: {} });
 });
