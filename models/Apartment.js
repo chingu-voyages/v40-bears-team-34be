@@ -142,4 +142,9 @@ ApartmentSchema.pre('save', function (next) {
     next();
 });
 
+// Delete all the reviews of an apartment when the apartment is deleted.
+ApartmentSchema.pre('remove', async function (next) {
+    await this.model('Review').deleteMany({ apartment: this._id });
+});
+
 export const Apartment = mongoose.model('Apartment', ApartmentSchema);
