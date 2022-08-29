@@ -7,15 +7,14 @@ import ErrorResponse from '../utils/errorResponse.js';
 // @access    Public as of now
 
 export const createUser = asyncHandler(async (req, res, next) => {
-  if (req.user?.role !== 'admin' ) {
-    return next(
-        new ErrorResponse('You are not authorized to create a user', 401)
-    );
-  }
-      await User.create(req.body);
-      res.status(201).json({
-          sucess: 'true',
-          message: 'User created successfully',
-      });
-  
+    if (req.user?.role !== 'admin') {
+        return next(
+            new ErrorResponse('You are not authorized to create a user', 401)
+        );
+    }
+    await User.create(req.body);
+    res.status(201).json({
+        sucess: 'true',
+        message: 'User created successfully',
+    });
 });

@@ -71,7 +71,7 @@ export const ReviewSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: 'User',
         required: true,
-        default:`62f4e5b99fbafe1ce87ead33`
+        default: `62f4e5b99fbafe1ce87ead33`,
     },
     createdAt: {
         type: Date,
@@ -79,5 +79,4 @@ export const ReviewSchema = new mongoose.Schema({
     },
 });
 
-
-export const Review = mongoose.model('Review',ReviewSchema)
+export const Review = mongoose.model('Review', ReviewSchema);
