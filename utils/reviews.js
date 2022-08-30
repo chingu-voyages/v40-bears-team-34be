@@ -1,40 +1,93 @@
-import natural from "natural"
-import {removeStopwords} from "stopword"
-import reviews from './reviewsample.js'
+import natural from 'natural';
+import { removeStopwords } from 'stopword';
+import reviews from './reviewsample.js';
 
 const getFilteredReview = (review) => {
-  const tokenizer = new natural.WordTokenizer()
-  const alphaLowerCase = review.text.toLowerCase().replace(/[^a-z,A-Z\s]+/g, '')
-  const tokenizedReview = tokenizer.tokenize(alphaLowerCase)
-  const filteredReview = removeStopwords(tokenizedReview)
-  return filteredReview
-}
-
-const scoreKeywords = (review) => {
-  const scores = {"quiet": 0, "clean": 0, "management": 0, "neighborhood": 0, "crime": 0, "bugs": 0}                                                               
-  const positiveKeywords = ['quiet', 'clean', 'management','neighborhood']
-  const negativeKeywords = ['crime', 'bugs']
-  for (const word of positiveKeywords) {
-    if (review.includes(word))
-      scores[word] = scores[word] + 1
-  }
-  for (const word of negativeKeywords) {
-    if (review.includes(word))
-      scores[word] = scores[word] - 1
-  }
-  return scores
-}
-const totalAllScores = (reviews) => {
-  const totalScores = {"quiet": 0, "clean": 0, "management": 0, "neighborhood": 0, "crime": 0, "bugs": 0}
-  for (let i = 0; i < reviews.length; i++) {
-    // console.log(`Review ${i} is `,scoreKeywords(getFilteredReview(reviews[i])))
-    const reviewScores = scoreKeywords(getFilteredReview(reviews[i]))
-    for (const score in totalScores) {
-      totalScores[score] = totalScores[score] + reviewScores[score]
+    const tokenizer = new natural.WordTokenizer();
+    const alphaLowerCase = review.text
+        .toLowerCase()
+        .replace(/[^a-z,A-Z\s]+/g, '');
+    const tokenizedReview = tokenizer.tokenize(alphaLowerCase);
+    const filteredReview = removeStopwords(tokenizedReview);
+    return filteredReview;
+};
+const findModifiers = (review) => {
+    const modifiers = ['no', 'not'];
+    const modifierIndexes = [];
+    for (const word of modifiers) {
+        for (let i = 0; i < review.length; i++) {
+            if (review[i] === word) {
+                modifierIndexes.push(i);
+            }
+        }
     }
-}
-  return totalScores
-}
+    return modifierIndexes;
+};
+const scoreKeywords = (review) => {
+    const scores = {
+        quiet: { positive: 0, negative: 0 },
+        clean: { positive: 0, negative: 0 },
+        management: { positive: 0, negative: 0 },
+        neighborhood: { positive: 0, negative: 0 },
+        crime: { positive: 0, negative: 0 },
+        bugs: { positive: 0, negative: 0 },
+    };
+    const positiveKeywords = ['quiet', 'clean', 'management', 'neighborhood'];
+    const negativeKeywords = ['crime', 'bugs'];
+    let phrase = [];
+    let notNegative = [];
+    const indexesOfNegativeModifiers = findModifiers(review);
+    if (indexesOfNegativeModifiers.length > 0) {
+        for (let i = 0; i < indexesOfNegativeModifiers.length; i++) {
+            phrase = review.slice(
+                indexesOfNegativeModifiers[i] - 1,
+                indexesOfNegativeModifiers + 1
+            );
+            notNegative = review
+                .slice(0, indexesOfNegativeModifiers[i] - 1)
+                .concat(review.slice(indexesOfNegativeModifiers + 1));
+            console.log(
+                'where no or not ',
+                indexesOfNegativeModifiers,
+                phrase,
+                notNegative
+            );
+            for (const word of positiveKeywords) {
+                if (phrase.includes(word)) {
+                    scores[word].negative = scores[word].negative + 1;
+                }
+            }
+            for (const word of negativeKeywords) {
+                if (phrase.includes(word)) {
+                    scores[word].positive = scores[word].positive + 1;
+                }
+            }
+        }
+    } else {
+        notNegative = review;
+    }
+    for (const word of positiveKeywords) {
+        if (notNegative.includes(word))
+            scores[word].positive = scores[word].positive + 1;
+    }
+    for (const word of negativeKeywords) {
+        if (notNegative.includes(word))
+            scores[word].negative = scores[word].negative + 1;
+    }
+    return scores;
+};
+const printAllReviewScores = (reviews) => {
+    for (let i = 0; i < reviews.length; i++) {
+        const reviewScores = scoreKeywords(getFilteredReview(reviews[i]));
+        console.log(
+            'Review',
+            i,
+            'Text',
+            reviews[i].text,
+            'has these scores',
+            reviewScores
+        );
+    }
+};
 
-console.log(totalAllScores(reviews))
-
+printAllReviewScores(reviews);
