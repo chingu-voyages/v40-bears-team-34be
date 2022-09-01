@@ -1,12 +1,9 @@
 import natural from 'natural';
 import { removeStopwords } from 'stopword';
-import reviews from './reviewsample.js';
 
 const getFilteredReview = (review) => {
     const tokenizer = new natural.WordTokenizer();
-    const alphaLowerCase = review.text
-        .toLowerCase()
-        .replace(/[^a-z,A-Z\s]+/g, '');
+    const alphaLowerCase = review.toLowerCase().replace(/[^a-z,A-Z\s]+/g, '');
     const tokenizedReview = tokenizer.tokenize(alphaLowerCase);
     const filteredReview = removeStopwords(tokenizedReview);
     return filteredReview;
@@ -76,18 +73,4 @@ const scoreKeywords = (review) => {
     }
     return scores;
 };
-const printAllReviewScores = (reviews) => {
-    for (let i = 0; i < reviews.length; i++) {
-        const reviewScores = scoreKeywords(getFilteredReview(reviews[i]));
-        console.log(
-            'Review',
-            i,
-            'Text',
-            reviews[i].text,
-            'has these scores',
-            reviewScores
-        );
-    }
-};
-
-printAllReviewScores(reviews);
+export { getFilteredReview, scoreKeywords };
