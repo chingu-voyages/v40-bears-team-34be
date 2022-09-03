@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 import slugify from 'slugify';
 import { AmenitySchema } from './Amenity.js';
-import { ScoresSchema } from './Scores.js';
 
 const ApartmentSchema = new mongoose.Schema(
     {
@@ -24,17 +23,6 @@ const ApartmentSchema = new mongoose.Schema(
             type: String,
             required: [true, 'Image URL is required'],
         },
-        // bedroom: {
-        //     rooms: {
-        //         type: Number,
-        //         enum: [1, 2, 3, 4, 5],
-        //         required: [true, 'Add the bedroom count for this apartment'],
-        //     },
-        //     monthlyRent: {
-        //         type: Number,
-        //         required: [true, 'Please enter the amount in dollars'],
-        //     },
-        // },
         bedrooms: {
             '1Bedroom': {
                 exist: {
@@ -102,15 +90,7 @@ const ApartmentSchema = new mongoose.Schema(
                 default: 'admin@apch.com',
             },
         },
-
-        scores: {
-            type: ScoresSchema,
-            default: {
-                amenitiesScore: 10,
-                rentalScore: 30,
-                reviewsScore: 30,
-            },
-        },
+        reviewScores: {},
         address: {
             type: String,
         },
@@ -145,6 +125,7 @@ ApartmentSchema.pre('save', function (next) {
 // Delete all the reviews of an apartment when the apartment is deleted.
 ApartmentSchema.pre('remove', async function (next) {
     await this.model('Review').deleteMany({ apartment: this._id });
+    next();
 });
 
 export const Apartment = mongoose.model('Apartment', ApartmentSchema);
